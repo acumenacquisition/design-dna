@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Design DNA record (dna.json)",
+  "description": "The exhaustive record of one visual style. Read by humans, build tools and check scripts. NEVER pasted into a prompt; PROMPT.md is compiled from it.",
+  "type": "object",
+  "required": ["meta", "soul", "palette", "type", "space", "signatures", "weird_move", "bans", "tests", "reconstruction"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["name", "slug", "source", "captured"],
+      "properties": {
+        "name": { "type": "string", "description": "Human name of the style." },
+        "slug": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "Folder name; the skill becomes style-<slug>." },
+        "source": { "type": "array", "items": { "type": "string" }, "description": "Paths/URLs of the reference files, kept in reference/." },
+        "captured": { "type": "string", "description": "ISO date the DNA was taken." },
+        "medium_of_origin": { "type": "string", "description": "What the reference was: poster, landing page, carousel slide, deck, motion, etc." },
+        "owner": { "type": "string", "description": "me, or the client slug if this is a client's style." },
+        "not_copied": { "type": "array", "items": { "type": "string" }, "description": "Logos, wordmarks, licensed photos, proprietary fonts deliberately excluded, with what replaces them." }
+      }
+    },
+    "soul": {
+      "type": "object",
+      "required": ["one_line", "adjectives"],
+      "properties": {
+        "one_line": { "type": "string", "maxLength": 160, "description": "The compression key. Concrete nouns, no marketing words." },
+        "adjectives": { "type": "array", "minItems": 3, "maxItems": 5, "items": { "type": "string" } },
+        "lineage": { "type": "string", "description": "Family tree: Swiss editorial, 90s rave flyer, brutalist web, etc." },
+        "read_distance": { "enum": ["thumb", "arms-length", "desk", "room", "street"], "description": "How far away it is read from. Sets minimum type size." },
+        "energy": {
+          "type": "object",
+          "description": "Each 1-10.",
+          "properties": {
+            "density": { "type": "integer", "minimum": 1, "maximum": 10 },
+            "variance": { "type": "integer", "minimum": 1, "maximum": 10 },
+            "contrast": { "type": "integer", "minimum": 1, "maximum": 10 },
+            "warmth": { "type": "integer", "minimum": 1, "maximum": 10 }
+          }
+        }
+      }
+    },
+    "palette": {
+      "type": "object",
+      "required": ["colors", "coverage"],
+      "properties": {
+        "colors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "hex", "name"],
+            "properties": {
+              "role": { "type": "string", "description": "ground, ink, accent, support, etc. Must match a key in coverage." },
+              "hex": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+              "name": { "type": "string", "description": "DESCRIPTIVE name ('dusty plum'), never a token ('accent-500')." },
+              "measured": { "type": "boolean", "description": "false if inferred." }
+            }
+          }
+        },
+        "coverage": { "type": "object", "additionalProperties": { "type": "number" }, "description": "Role -> % of canvas. Sums to ~100. The most skipped and most decisive field." },
+        "coverage_tolerance_pct": { "type": "number", "description": "Allowed +/- per role when auto-checking. Default 5." },
+        "mode": { "type": "string", "description": "light, dark, or both." },
+        "banned": { "type": "array", "items": { "type": "string" }, "description": "Forbidden colour behaviours: gradients, second accent, pure black, etc." }
+      }
+    },
+    "type": {
+      "type": "object",
+      "required": ["families", "scale"],
+      "properties": {
+        "families": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "family", "fallback"],
+            "properties": {
+              "role": { "type": "string" },
+              "family": { "type": "string" },
+              "fallback": { "type": "string", "description": "REQUIRED. Nearest free/available substitute." },
+              "weights": { "type": "array", "items": { "type": ["integer", "string"] } },
+              "licence_risk": { "type": "string" }
+            }
+          }
+        },
+        "scale": {
+          "type": "object",
+          "required": ["display_to_body_ratio"],
+          "properties": {
+            "display_to_body_ratio": { "type": "number", "description": "The typographic signature. 8 and 2 are different designs with identical fonts." },
+            "min_ratio": { "type": "number" },
+            "steps": { "type": "array", "items": { "type": "number" }, "description": "Sizes as multiples of body." },
+            "max_sizes_per_frame": { "type": "integer" },
+            "min_px_at_1080w": { "type": "number", "description": "Smallest legal type size at a 1080px-wide canvas; derived from read_distance." }
+          }
+        },
+        "treatment": {
+          "type": "object",
+          "properties": {
+            "display_tracking": { "type": "string" },
+            "body_leading": { "type": "string" },
+            "case": { "type": "string" },
+            "measure": { "type": "string", "description": "Characters per line." },
+            "numerals": { "type": "string" }
+          }
+        }
+      }
+    },
+    "space": {
+      "type": "object",
+      "description": "All values as % of canvas, never px.",
+      "properties": {
+        "grid": { "type": "string" },
+        "margin_pct": { "type": "number" },
+        "gutter_pct": { "type": "number" },
+        "alignment": { "type": "string" },
+        "rhythm": { "type": "string" },
+        "negative_space": { "type": "string", "description": "Where the emptiness sits and how big." },
+        "safe_area": { "type": "object", "additionalProperties": { "type": "string" }, "description": "Per platform, e.g. instagram_4x5, linkedin_doc, 16x9_slide." }
+      }
+    },
+    "surface": {
+      "type": "object",
+      "properties": {
+        "texture": { "type": "string", "description": "Kind, opacity, scale, stacking order." },
+        "edges": { "type": "string" },
+        "elevation": { "type": "string" },
+        "imagery": { "type": "string" },
+        "iconography": { "type": "string" }
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 9,
+      "description": "The payload. Carry only these and it is still recognisable.",
+      "items": {
+        "type": "object",
+        "required": ["move", "how", "never"],
+        "properties": {
+          "move": { "type": "string", "description": "Named like a technique." },
+          "how": { "type": "string", "description": "As a RATIO or RELATIONSHIP." },
+          "when": { "type": "string" },
+          "never": { "type": "string", "description": "How it gets used wrong." }
+        }
+      }
+    },
+    "weird_move": {
+      "type": "object",
+      "required": ["what", "how"],
+      "description": "The single deliberate break in the system. Own key so it can never get buried.",
+      "properties": {
+        "what": { "type": "string" },
+        "how": { "type": "string" },
+        "why": { "type": "string" },
+        "frequency": { "type": "string", "description": "Usually 'exactly once per piece'." }
+      }
+    },
+    "archetypes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "purpose", "anatomy"],
+        "properties": {
+          "id": { "type": "string" },
+          "purpose": { "type": "string", "description": "Role in a sequence: cover, proof, list, CTA, etc." },
+          "anatomy": { "type": "string" },
+          "content_shape": { "type": "string", "description": "Content budget: max words, items, images." }
+        }
+      }
+    },
+    "motion": {
+      "type": "object",
+      "description": "Omit for static work.",
+      "properties": {
+        "easing": { "type": "string" },
+        "durations": { "type": "string" },
+        "entrances": { "type": "string" },
+        "never_moves": { "type": "array", "items": { "type": "string" } },
+        "reduced_motion": { "type": "string" }
+      }
+    },
+    "voice": {
+      "type": "object",
+      "properties": {
+        "register": { "type": "string" },
+        "sentence_length": { "type": "string" },
+        "headline_shape": { "type": "string" },
+        "banned_words": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "bans": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "type": "string" },
+      "description": "Absolutes ('Never centre the hero'). Should outnumber positive style rules."
+    },
+    "tests": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": ["id", "check", "fail_looks_like", "auto"],
+        "properties": {
+          "id": { "type": "string" },
+          "check": { "type": "string", "description": "Binary and measurable." },
+          "fail_looks_like": { "type": "string" },
+          "auto": { "type": "boolean", "description": "true if tools/check.py decides it." }
+        }
+      }
+    },
+    "reconstruction": {
+      "type": "object",
+      "required": ["attempted", "passes", "gaps_found"],
+      "description": "Derived status of the spec. Lint reports UNVERIFIED until passes >= 1.",
+      "properties": {
+        "attempted": { "type": "boolean" },
+        "passes": { "type": "integer", "minimum": 0 },
+        "gaps_found": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pass": { "type": "integer" },
+              "gap": { "type": "string" },
+              "fixed_in": { "type": "string", "description": "dna.json key the fix went into." }
+            }
+          }
+        },
+        "stranger_test": { "enum": ["not_run", "fail", "pass"] },
+        "uncertain": { "type": "array", "items": { "type": "string" }, "description": "Inferred values and rules under 70% confidence (Step 7)." }
+      }
+    }
+  }
+}

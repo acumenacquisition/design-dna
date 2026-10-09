@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "name": "{{NAME}}",
+    "slug": "{{SLUG}}",
+    "source": [],
+    "captured": "{{DATE}}",
+    "medium_of_origin": "",
+    "owner": "me",
+    "not_copied": []
+  },
+  "soul": {
+    "one_line": "",
+    "adjectives": [],
+    "lineage": "",
+    "read_distance": "arms-length",
+    "energy": { "density": 5, "variance": 5, "contrast": 5, "warmth": 5 }
+  },
+  "palette": {
+    "colors": [],
+    "coverage": {},
+    "coverage_tolerance_pct": 5,
+    "mode": "light",
+    "banned": []
+  },
+  "type": {
+    "families": [],
+    "scale": { "display_to_body_ratio": 0, "min_ratio": 0, "steps": [], "max_sizes_per_frame": 3, "min_px_at_1080w": 28 },
+    "treatment": { "display_tracking": "", "body_leading": "", "case": "", "measure": "", "numerals": "" }
+  },
+  "space": {
+    "grid": "",
+    "margin_pct": 0,
+    "gutter_pct": 0,
+    "alignment": "",
+    "rhythm": "",
+    "negative_space": "",
+    "safe_area": {}
+  },
+  "surface": { "texture": "", "edges": "", "elevation": "", "imagery": "", "iconography": "" },
+  "signatures": [],
+  "weird_move": { "what": "", "how": "", "why": "", "frequency": "exactly once per piece" },
+  "archetypes": [],
+  "voice": { "register": "", "sentence_length": "", "headline_shape": "", "banned_words": [] },
+  "bans": [],
+  "tests": [],
+  "reconstruction": {
+    "attempted": false,
+    "passes": 0,
+    "gaps_found": [],
+    "stranger_test": "not_run",
+    "uncertain": []
+  }
+}
